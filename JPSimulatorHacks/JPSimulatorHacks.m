@@ -38,7 +38,6 @@ static NSString * const JPSimulatorHacksServiceContacts         = @"kTCCServiceC
 static NSString * const JPSimulatorHacksServiceCamera           = @"kTCCServiceCamera";
 static NSString * const JPSimulatorHacksServiceMicrophone       = @"kTCCServiceMicrophone";
 static NSString * const JPSimulatorHacksServiceReminders        = @"kTCCServiceReminders";
-static NSString * const JPSimulatorHacksServiceTwitter          = @"kTCCServiceTwitter";
 static NSString * const JPSimulatorHacksServiceContactsError    = @"Contacts Framework supported from iOS 9 or later";
 
 static NSTimeInterval JPSimulatorHacksTimeout = 15.0f;
@@ -207,20 +206,6 @@ static NSTimeInterval JPSimulatorHacksTimeout = 15.0f;
                                allowed:YES];
 }
 
-+ (BOOL)grantAccessToTwitter
-{
-    return [self changeAccessToService:JPSimulatorHacksServiceTwitter
-                      bundleIdentifier:[NSBundle mainBundle].bundleIdentifier
-                               allowed:YES];
-}
-
-+ (BOOL)grantAccessToTwitterForBundleIdentifier:(NSString *)bundleIdentifier
-{
-    return [self changeAccessToService:JPSimulatorHacksServiceTwitter
-                      bundleIdentifier:bundleIdentifier
-                               allowed:YES];
-}
-
 + (void)setTimeout:(NSTimeInterval)timeout
 {
     JPSimulatorHacksTimeout = timeout;
@@ -291,8 +276,19 @@ static NSTimeInterval JPSimulatorHacksTimeout = 15.0f;
         JPSimulatorHacksDB *db = [JPSimulatorHacksDB databaseWithPath:[self cddbPath]];
         if (![db open]) continue;
 
-        NSString *query = @"REPLACE INTO access (service, client, client_type, allowed, prompt_count) VALUES (?, ?, ?, ?, ?)";
-        NSArray *parameters = @[service, bundleIdentifier, @"0", [@(allowed) stringValue], @"0"];
+        NSString *query = nil;
+        NSArray *parameters = nil;
+        
+        if (@available(iOS 14, *)) {
+            query = @"REPLACE INTO access (service, client, client_type, auth_value, auth_reason, auth_version, flags) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            NSString *authVersion = [service isEqualToString:JPSimulatorHacksServicePhotos] ? @"2" : @"1";
+            NSString *authValue = allowed ? @"2" : @"0";
+            parameters = @[service, bundleIdentifier, @"0", authValue, @"2", authVersion, @"0"];
+        } else {
+            query = @"REPLACE INTO access (service, client, client_type, allowed, prompt_count) VALUES (?, ?, ?, ?, ?)";
+            parameters = @[service, bundleIdentifier, @"0", [@(allowed) stringValue], @"0"];
+        }
+        
         if ([db executeUpdate:query withArgumentsInArray:parameters]) {
             success = YES;
         }

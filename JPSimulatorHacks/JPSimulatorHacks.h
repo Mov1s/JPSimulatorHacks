@@ -68,9 +68,6 @@ FOUNDATION_EXPORT const unsigned char JPSimulatorHacksVersionString[];
 + (BOOL)grantAccessToReminders;
 + (BOOL)grantAccessToRemindersForBundleIdentifier:(NSString *)bundleIdentifier;
 
-+ (BOOL)grantAccessToTwitter;
-+ (BOOL)grantAccessToTwitterForBundleIdentifier:(NSString *)bundleIdentifier;
-
 + (void)setTimeout:(NSTimeInterval)timeout;
 
 @end
