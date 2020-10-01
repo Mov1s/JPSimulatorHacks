@@ -62,7 +62,6 @@
     [JPSimulatorHacks grantAccessToCamera];
     [JPSimulatorHacks grantAccessToMicrophone];
     [JPSimulatorHacks grantAccessToReminders];
-    [JPSimulatorHacks grantAccessToTwitter];
 }
 
 - (void)testAddAssetWithURL
@@ -128,25 +127,6 @@
         if (error) {
             NSLog(@"Error: %@", error);
             failure(@"Reminders access not enabled!");
-        }
-    }];
-}
-
-- (void)testTwitterAccess
-{
-    ACAccountStore *store = [[ACAccountStore alloc] init];
-    ACAccountType *twitterAccountType = [store accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierTwitter];
-    XCTestExpectation *expectation = [self expectationWithDescription:@"Request entity timed out!"];
-    [store requestAccessToAccountsWithType:twitterAccountType
-                                   options:nil
-                                completion:^(BOOL granted, NSError *error) {
-        expect(granted).to.beTruthy();
-        [expectation fulfill];
-    }];
-    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError *error) {
-        if (error) {
-            NSLog(@"Error: %@", error);
-            failure(@"Twitter access not enabled!");
         }
     }];
 }
