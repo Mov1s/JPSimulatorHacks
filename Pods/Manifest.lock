@@ -12,6 +12,11 @@ DEPENDENCIES:
   - JPSimulatorHacks (from `.`)
   - KIF
 
+SPEC REPOS:
+  trunk:
+    - Expecta
+    - KIF
+
 EXTERNAL SOURCES:
   JPSimulatorHacks:
     :path: "."
@@ -23,4 +28,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: ac57d2de111a2bdf8077628fc091ddf13a7356a3
 
-COCOAPODS: 1.2.1
+COCOAPODS: 1.9.3
